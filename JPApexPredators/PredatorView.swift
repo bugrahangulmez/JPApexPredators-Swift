@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct PredatorView: View {
     let predator: ApexPredator
+    @State var position: MapCameraPosition
+    
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -43,6 +46,14 @@ struct PredatorView: View {
                             .font(.subheadline)
                     }
                     
+                    Map(position: $position){
+                            Annotation(predator.name, coordinate: predator.location) {
+                                Image(systemName: "location.fill")
+                            }
+                        }
+                    .frame(width: .infinity, height: 150)
+                    .clipShape(.rect(cornerRadius: 10))
+                    
                     Text("Movie Movements")
                         .font(.title)
                         .padding(.top,15)
@@ -66,10 +77,15 @@ struct PredatorView: View {
             }
             .ignoresSafeArea()
         }
+        .toolbarBackground(.automatic)
     }
 }
 
 #Preview {
-    PredatorView(predator: Predators().apexPredators[10])
+    var pretador = Predators().apexPredators[5]
+    PredatorView(
+        predator: Predators().apexPredators[5],
+        position: .camera(MapCamera(centerCoordinate: Predators().apexPredators[5].location, distance: 1000))
+    )
         .preferredColorScheme(.dark)
 }
